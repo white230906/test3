@@ -28,7 +28,7 @@ public class Service: IService
         {
             Email = request.Email,
             Password = request.Password,
-            Role = "USer"
+            Role = "User"
         };
         _dbContext.Add(newUser);
         await _dbContext.SaveChangesAsync();

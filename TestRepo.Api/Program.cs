@@ -8,6 +8,7 @@ using JwtService = TetPee.Service.JwtService;
 using CategoryService = TetPee.Service.Category;
 using UserService = TetPee.Service.User;
 using IdentityService = TetPee.Service.Identity;
+using SellerService = TetPee.Service.Seller;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddJwtServices(builder.Configuration);
 builder.Services.AddSwaggerServices();
 
+builder.Services.AddScoped<SellerService.IService, SellerService.Service>(); 
 
 builder.Services.AddScoped<IdentityService.IService, IdentityService.Service>(); 
 builder.Services.AddScoped<UserService.IService, UserService.Service>(); 
