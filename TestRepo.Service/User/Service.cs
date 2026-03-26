@@ -13,11 +13,6 @@ public class Service: IService
     }
     public async Task<string> CreateUser(Request.UserRequest request)
     {
-        // var user = _dbContext.Users.FirstOrDefault(u => u.Email == request.Email);
-        // if (user != null)
-        // {
-        //     throw new Exception("User already exists");
-        // }
         var isEmailQuery = _dbContext.Users.Where(u => u.Email == request.Email);
         var isEmailExist = await isEmailQuery.AnyAsync();
         if (isEmailExist)
@@ -33,5 +28,33 @@ public class Service: IService
         _dbContext.Add(newUser);
         await _dbContext.SaveChangesAsync();
         return Response.Message.CreateSuccess;
+    }
+
+    public async Task<Base.Response.PageResult<Response.UserResponse>> ListUsers(string? searchTerm, int pageIndex, int pageSize)
+    {
+        var query =  _dbContext.Users.Where(u => true);
+        if (searchTerm != null)
+        {
+            query = _dbContext.Users.Where(u => u.Email == searchTerm);
+        }
+        query  = query.OrderBy(u => u.Email);
+        query = query.Skip((pageIndex - 1) * pageSize).Take(pageSize);
+        var selectedQuery = query.Select(u => new Response.UserResponse()
+        {
+            Email = u.Email,
+            Password = u.Password,
+            Role = u.Role
+        });
+        var pageResult = await selectedQuery.ToListAsync();
+        var totalItems =  pageResult.Count;
+        var result = new Base.Response.PageResult<Response.UserResponse>()
+        {
+            Items = pageResult,
+            totalItems = totalItems,
+            pageIndex = pageIndex,
+            pageSize = pageSize
+        };
+        return result;
+        
     }
 }

@@ -18,5 +18,10 @@ public class UserController: ControllerBase
         var newCategory = await _userService.CreateUser(request);
         return Ok(newCategory);
     }
-
+    [HttpGet("")]
+    public async Task<IActionResult> ListUsers(string? searchTerm, int pageIndex = 1, int pageSize = 10)
+    {
+        var newCategory = await _userService.ListUsers(searchTerm, pageIndex, pageSize);
+        return Ok(newCategory);
+    }
 }
